@@ -6,7 +6,7 @@ The main purpose of this project is to make a very strong business logic part wh
 I want it to be beautiful and useful. I want to add there a possibility to take a quiz in the app and to receive notification from the app with words or content you need to revise. 
 The hardest points in the app, to consult with Natalie:
 - Libraries, how to utilize them properly
-- Notifications 
+- Notifications (Maybe just open new windows)
 - Server
 # Also great ways to improve the app 
 - Active Recall: Test yourself by trying to recall the meaning or usage of a word rather than just rereading it. Active recall strengthens memory more than passive review.
@@ -14,4 +14,11 @@ Contextual Learning: Learn words in context (sentences or situations) to enhance
 Use Mnemonics: Create memory aids or associations with the words to make them stick more effectively.
 - To add some rewards for students who study good 
 - Do in instagram lots of ads and to buy some commercial from yt guys who teach how to pass exams 
-- Also I can test it in the university 
+- Testing it in the university 
+- To close reminder choose right option 
+# QUESTIONS TO THINK OF 
+- client-server communication
+- how to send photos 
+- how to send photos in notifications 
+- how to use widgets 
+- 
