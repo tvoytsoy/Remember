@@ -7,6 +7,17 @@ import json
 import sqlite3
 
 TIMINGS: list = [10,1440,5760,10080,20160,40320, (40320*6)]
+BTN1_IMAGE = "./Images/BTN1.png"
+BTN2_IMAGE = "./Images/BTN2.png"
+SMLBTN1_IMAGE = "./Images/SMLBTN1.png"
+SMLBTN2_IMAGE = "./Images/SMLBTN2.png"
+SMLBTN3_IMAGE = "./Images/SMLBTN3.png"
+SMLBTN4_IMAGE = "./Images/SMLBTN4.png"
+SMLBTN5_IMAGE = "./Images/SMLBTN5.png"
+BG_IMAGE = "./Images/BCKGRND.png"
+SQR_IMAGE = "./Images/SQR.png"
+
+
 SERVER_HOST: str = "0.0.0.0"
 CLIENT_HOST: str = "127.0.0.1"
 PORT: int = 12345

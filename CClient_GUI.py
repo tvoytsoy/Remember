@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import *
-from CClientBL import *
-from CLoginGUI import *
+from CCLient_BL import *
 import json
 
 BTN_IMAGE = "./Images/GUI - button.png"
