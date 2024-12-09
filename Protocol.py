@@ -5,8 +5,10 @@ import random
 import logging
 import json
 import sqlite3
+from cryptography.fernet import Fernet
 
-TIMINGS: list = [10,1440,5760,10080,20160,40320, (40320*6)]
+
+TIMINGS: list = [10, 1440, 5760, 10080, 20160, 40320, (40320*6)]
 BTN1_IMAGE = "./Images/BTN1.png"
 BTN2_IMAGE = "./Images/BTN2.png"
 SMLBTN1_IMAGE = "./Images/SMLBTN1.png"
@@ -16,8 +18,6 @@ SMLBTN4_IMAGE = "./Images/SMLBTN4.png"
 SMLBTN5_IMAGE = "./Images/SMLBTN5.png"
 BG_IMAGE = "./Images/BCKGRND.png"
 SQR_IMAGE = "./Images/SQR.png"
-
-
 SERVER_HOST: str = "0.0.0.0"
 CLIENT_HOST: str = "127.0.0.1"
 PORT: int = 12345
@@ -36,7 +36,7 @@ def check_cmd(data) -> bool:
     print(data)
     data = data.upper()
     listdata = data.split(">")
-    return listdata[0] in ("REG", "LOG", DISCONNECT_MSG)
+    return listdata[0] in ("TIME", "RAND", "NAME", "REG", "LOG", DISCONNECT_MSG)
 
 
 def create_request_msg(data) -> str:
@@ -56,42 +56,76 @@ def create_response_msg(data) -> str:
     if list[0] == DISCONNECT_MSG:
         response = "Exit request accepted"
     elif list[0] == "REG":
-        register(list[1])
+        json_acceptable_string = list[1].replace("'", "\"")
+        data = json.loads(json_acceptable_string)
+        write_to_log("data in creating:" + json_acceptable_string)
+        return data, 1
     elif list[0] == "LOG":
-        login(list[1])
+        json_acceptable_string = list[1].replace("'", "\"")
+        data = json.loads(json_acceptable_string)
+        response, table = login(data) #table 2 if singed successfully, 0 if wrong account details
+        return response, table
+    elif list[0] == "TIME":
+        response = str(datetime.now())
+    elif list[0] == "NAME":
+        response = socket.gethostname()
+    elif list[0] == "RAND":
+        response = f"{random.randint(1,1000)}"
+    elif list[0] == DISCONNECT_MSG:
+        response = "Exit request accepted"
     response = f"{len(response):02d}{response}"
-    return response
+    return response, 0
 
 def register(data: json):
     login = data["login"]
     password = data["password"]
-    connection = sqlite3.connect("Users.db")
+    connection = sqlite3.connect("RememberDB.db")
     cursor = connection.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS Users
+    cursor.execute('''CREATE TABLE IF NOT EXISTS Users 
     (id INTEGER PRIMARY KEY,
     login TEXT NOT NULL,
     password TEXT NOT NULL,
     key TEXT NOT NULL)''')
-    cursor.execute(f"INSERT INTO Users VALUES IF NOT EXISTS({login}, {password})")
+    key = Fernet.generate_key()
+    encryption = Fernet(key)
+    cursor.execute(
+        """INSERT INTO Users (login, password, key) VALUES(?, ?, ?);""",
+(
+
+                login,
+                encryption.encrypt(password.encode()),
+                key)
+            )
+    return "registration succeed"
 def login(data: json):
     log = data["login"]
     password = data["password"]
     connection = sqlite3.connect("Users.db")
     cursor = connection.cursor()
     cursor.execute("SELECT login, password FROM Users ")
-    if log in cursor.fetchall()[0] and password in cursor.fetchall()[1]:
-        for row in cursor.fetchall():
-            if row[0] == log and row[1] == password:
-                pass
-            """log in [][][][][][][][][][][][]"""
-        pass
-        """wrong password"""
-    elif log in cursor.fetchall()[0] and not(password in cursor.fetchall()[1]):
-        '''wrong password'''
-        pass
+    if cursor.fetchall():
+        if log in cursor.fetchall()[0] and password in cursor.fetchall()[1]:
+            for row in cursor.fetchall():
+                if row[0] == log and row[1] == password:
+                    return "signing in...", 2
+            response = "wrong password"
+            response = f"{len(response):02d}{response}"
+            return response, 0
+        elif log in cursor.fetchall()[0] and not(password in cursor.fetchall()[1]):
+            response = "wrong password"
+            response = f"{len(response):02d}{response}"
+            return response, 0
+        else:
+
+            response = "the user does not exist"
+            response = f"{len(response):02d}{response}"
+            return response, 0
+
     else:
-        """user does not exist in the db"""
-        pass
+        response = "the user does not exist"
+        response = f"{len(response):02d}{response}"
+        return response, 0
+
 
 def receive_msg(my_socket: socket) -> (bool, str):
     """Extract message from protocol, without the length field

@@ -12,8 +12,8 @@ NEW_CONNECTION: int = 1
 CLOSE_CONNECTION: int = 2
 class CServerGUI(CServerBL):
 
-    def __init__(self, host, port):
-        super().__init__(host,port)
+    def __init__(self, host, port, call_back_func):
+        super().__init__(host, port, call_back_func)
 
         # Attributes
         self._server_thread = None
@@ -105,12 +105,12 @@ class CServerGUI(CServerBL):
 
     def run(self):
         self._root.mainloop()
-
     def on_click_start(self):
         self._entry_IP.config(state="disabled")
         self._entry_Port.config(state="disabled")
         self._btn_start.config(state="disabled")
         self._btn_stop.config(state="normal")
+        #self._btn_reg.config(state="normal")
 
         self._server_thread = threading.Thread(target=self.start_server)
         self._server_thread.start()
@@ -120,22 +120,47 @@ class CServerGUI(CServerBL):
         self._entry_Port.config(state="normal")
         self._btn_start.config(state="normal")
         self._btn_stop.config(state="disabled")
+        self._btn_reg.config(state="disabled")
 
         self.stop_server()
 
-    def fire_event(self, enum_event: int, client_handle):
-        if enum_event == NEW_CONNECTION:
-            data = client_handle.address
-            self.tree.insert('', tk.END, value=data)
-        if enum_event == CLOSE_CONNECTION:
+    def on_click_reg(self):
+        item = self.list1.focus()
+        write_to_log("item: " + item)
+        values = self.list1.item(item, 'values')
+        write_to_log("values: " + values[0] + " "+values[1])
+        for obj in self.reg_requests:
+            write_to_log("in for")
+            write_to_log("obj" + obj[0][0] + " " + str(obj[0][1]))
+            if obj[0][0] == values[0] and str(obj[0][1]) == values[1]:
+                write_to_log("in if")
+                register(obj[1])
+                self.fire_event(2, (obj[0][0], obj[0][1]))
 
-            for item in self.tree.get_children():
-                values = self.tree.item(item, 'values')
-                if values and str(client_handle._address[1] in [str(value).lower() for value in values]):
-                    self.tree.delete(item)
 
+
+    def fire_event(self, enum_event: int, client_handle, details: json = None):
+
+        write_to_log("in actual fire event")
+        if enum_event == WAIT:
+            obj: list = [client_handle[1], details]
+            self.reg_requests.append(obj)
+            data = client_handle[1]
+            self.list1.insert('', tk.END, value=data)
+            response = "Registration request was received"
+        elif enum_event == SIGNED:
+            write_to_log("in signed")
+            for item in self.list1.get_children():
+                values = self.list1.item(item, 'values')
+                if values and str(client_handle[1] in [str(value).lower() for value in values]):
+                    self.list1.delete(item)
+            data = client_handle
+            self.list2.insert('', tk.END, value=data)
+            response = "login request was received"
+        response = f"{len(response):02d}{response}"
+        return response
 
 if __name__ == "__main__":
-    server = CServerGUI(CLIENT_HOST, PORT)
+    server = CServerGUI(CLIENT_HOST, PORT, call_back_func= None)
     server.run()
 
