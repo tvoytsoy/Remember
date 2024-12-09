@@ -2,11 +2,11 @@ import tkinter as tk
 from tkinter import *
 from CCLient_BL import *
 import json
+from CConnect_GUI import *
 
-BTN_IMAGE = "./Images/GUI - button.png"
-BG_IMAGE = "./Images/GUI - BG.png"
+
 FONT = "Calibri"
-FONT_BUTTON = (FONT, 16)
+FONT_BUTTON = (FONT, 40)
 
 
 class CClientGUI(CClientBL):
@@ -18,7 +18,9 @@ class CClientGUI(CClientBL):
         self._root = tk.Tk()
         self._canvas = None
         self._img_bg = None
-        self._img_btn = None
+        self._img_btn1 = None
+        self._img_btn2 = None
+
 
         self._entry_IP = None
         self._entry_Port = None
@@ -49,57 +51,63 @@ class CClientGUI(CClientBL):
         self._canvas.create_image(0,0,anchor="nw",image=self._img_bg)
 
         # Add labels, the same as.. add text on canvas
+        '''
         self._canvas.create_text(90,80,text='Client',font=('Calibri',28),fill='#808080')
         self._canvas.create_text(50,180,text='IP:',font=FONT_BUTTON,fill='#000000',anchor='w')
         self._canvas.create_text(50,230,text='Port:',font=FONT_BUTTON,fill='#000000',anchor='w')
         self._canvas.create_text(50,280,text='Send:',font=FONT_BUTTON,fill='#000000',anchor='w')
         self._canvas.create_text(50,330,text='Received:',font=FONT_BUTTON,fill='#000000',anchor='w')
+        '''
 
         # Load button image
-        self._img_btn = PhotoImage(file=BTN_IMAGE)
-        img_btn_w = self._img_btn.width()
-        img_btn_h = self._img_btn.height()
+        self._img_btn1 = PhotoImage(file=BTN1_IMAGE)
+        self._img_btn2 = PhotoImage(file=BTN2_IMAGE)
+        img_btn_w = self._img_btn1.width()
+        img_btn_h = self._img_btn1.height()
 
         # Button "Connect"
-        self._btn_connect = tk.Button(self._canvas,text="Connect",font=FONT_BUTTON,fg="#c0c0c0",compound="center",
-                                      width=img_btn_w,height=img_btn_h,image=self._img_btn,bd=0,
+        self._btn_connect = tk.Button(self._canvas,text="Connect",font=FONT_BUTTON,fg="#357194",compound="center",
+                                      width=img_btn_w,height=img_btn_h,image=self._img_btn1,bd=5,
                                       command=self.on_click_connect)
-        self._btn_connect.place(x=650,y=50)
+        self._btn_connect.place(x=30,y=340)
 
         # Button "Disconnect"
-        self._btn_disconnect = tk.Button(self._canvas,text="Disconnect",font=FONT_BUTTON,fg="#c0c0c0",compound="center",
-                                         width=img_btn_w,height=img_btn_h,image=self._img_btn,bd=0,
+        self._btn_disconnect = tk.Button(self._canvas,text="Disconnect",font=FONT_BUTTON,fg="#357194",compound="center",
+                                         width=img_btn_w,height=img_btn_h,image=self._img_btn2,bd=5,
                                          command=self.on_click_disconnect,state="disabled")
-        self._btn_disconnect.place(x=650,y=130)
+        self._btn_disconnect.place(x=30,y=250)
 
+        '''
         # Button "Send Data"
         self._btn_send = tk.Button(self._canvas,text="Send Request",font=FONT_BUTTON,fg="#c0c0c0",compound="center",
-                                   width=img_btn_w,height=img_btn_h,image=self._img_btn,bd=0,
+                                   width=img_btn_w,height=img_btn_h,image=self._img_btn1,bd=0,
                                    command=self.on_click_send,state="disabled")
         self._btn_send.place(x=650,y=210)
-
+        '''
         # Button "Reg / Login"
-        self._btn_login = tk.Button(self._canvas,text="Reg / Login",font=FONT_BUTTON,fg="#c0c0c0",compound="center",
-                                   width=img_btn_w,height=img_btn_h,image=self._img_btn,bd=0,
+        self._btn_login = tk.Button(self._canvas,text="Reg / Login",font=FONT_BUTTON,fg="#357194",compound="center",
+                                   width=img_btn_w,height=img_btn_h,image=self._img_btn2,bd=5,
                                    command=self.on_click_login)
-        self._btn_login.place(x=650,y=290)
+        self._btn_login.place(x=30,y=160)
 
         # Create Entry boxes
-        self._entry_IP = tk.Entry(self._canvas,font=('Calibri',16),fg='#808080')
-        self._entry_IP.insert(0,'127.0.0.1')
-        self._entry_IP.place(x=200,y=168)
+        self._entry_IP = tk.Entry(self._canvas,font=('Calibri',30),fg='#357194')
+        self._entry_IP.insert(0,'IP')
+        self._entry_IP.place(x=30,y=30)
 
-        self._entry_Port = tk.Entry(self._canvas,font=('Calibri',16),fg='#808080')
-        self._entry_Port.insert(0,"8822")
-        self._entry_Port.place(x=200,y=218)
+        self._entry_Port = tk.Entry(self._canvas,font=('Calibri',30),fg='#357194')
+        self._entry_Port.insert(0,"PORT")
+        self._entry_Port.place(x=30,y=100)
 
-        self._entry_Send = tk.Entry(self._canvas,font=('Calibri',16),fg='#808080')
-        self._entry_Send.insert(0,"text message")
-        self._entry_Send.place(x=200,y=268)
+        '''
+        self._entry_Send = tk.Entry(self._canvas,font=('Calibri',30),fg='#808080')
+        self._entry_Send.insert(0,"MESSAGE")
+        self._entry_Send.place(x=30,y=170)
 
-        self._entry_Received = tk.Entry(self._canvas,font=('Calibri',16),fg='#808080')
-        self._entry_Received.insert(0,"...")
-        self._entry_Received.place(x=200,y=318)
+        self._entry_Received = tk.Entry(self._canvas,font=('Calibri',30),fg='#808080')
+        self._entry_Received.insert(0,"RECEIVED")
+        self._entry_Received.place(x=30,y=240)
+        '''
 
     def run(self):
         self._root.mainloop()
@@ -139,7 +147,7 @@ class CClientGUI(CClientBL):
             write_to_log(f"[CLIENT GUI] SignIn - Received data from Login Wnd : {data}")
 
         write_to_log("[CLINT GUI] Login button pressed")
-        obj = CLoginGUI(self._root, callback_register, callback_signin)
+        obj = CConnectGUI(self._root, callback_register, callback_signin)
         obj.run()
 
     def update_received_entry(self):

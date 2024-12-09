@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import ttk
 from CServer_BL import *
 
-BTN_IMAGE = BTN2_IMAGE
+
 FONT = "Calibri"
 FONT_BUTTON = (FONT,40)
 
@@ -64,19 +64,20 @@ class CServerGUI(CServerBL):
         self._canvas.create_text(100,340,text='Received:',font=FONT_BUTTON,fill='#000000',anchor='w')
 
         # Load button image
-        self._img_btn = PhotoImage(file=BTN_IMAGE)
-        img_btn_w = self._img_btn.width()
-        img_btn_h = self._img_btn.height()
+        self._img_btn1 = PhotoImage(file=BTN1_IMAGE)
+        self._img_btn2 = PhotoImage(file=BTN2_IMAGE)
+        img_btn_w = self._img_btn2.width()
+        img_btn_h = self._img_btn2.height()
 
         # Button "Start"
         self._btn_start = tk.Button(self._canvas,text="Start",font=FONT_BUTTON,fg="#808080",compound="center",
-                                    width=img_btn_w,height=img_btn_h,image=self._img_btn,bd=0,
+                                    width=img_btn_w,height=img_btn_h,image=self._img_btn1,bd=0,
                                     command=self.on_click_start)
         self._btn_start.place(x=800,y=420)
 
         # Button "Stop"
         self._btn_stop = tk.Button(self._canvas,text="Stop",font=FONT_BUTTON,fg="#808080",compound="center",
-                                   width=img_btn_w,height=img_btn_h,image=self._img_btn,bd=0,
+                                   width=img_btn_w,height=img_btn_h,image=self._img_btn2,bd=0,
                                    command=self.on_click_stop,state="disabled")
         self._btn_stop.place(x=800,y=500)
 
